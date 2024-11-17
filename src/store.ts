@@ -126,7 +126,8 @@ const store = {
     const slots = await async.mapSeries(files, async (file: string) => {
       const fileFullPath = path.join(saveFolder, file);
       const buf = await readFile(fileFullPath);
-      const slotData = slotParser.parse(buf);
+      const unit8Array = new Uint8Array(buf);
+      const slotData = slotParser.parse(unit8Array);
       this.loadingInfo.currentIndex++;
       return {
         file: fileFullPath,
@@ -137,7 +138,8 @@ const store = {
     await forEach(survivalFiles, async (file: string) => {
       const fileFullPath = path.join(saveFolder, 'Survival', file);
       const buf = await readFile(fileFullPath);
-      const slotData = slotParser.parse(buf);
+      const unit8Array = new Uint8Array(buf);
+      const slotData = slotParser.parse(unit8Array);
       this.loadingInfo.currentIndex++;
       slots.unshift({
         file: fileFullPath,
@@ -155,9 +157,10 @@ const store = {
   async loadSave(file: string) {
     console.time('read save');
     const buf = await readFile(file);
+    const unit8Array = new Uint8Array(buf);
     console.timeEnd('read save');
     console.time('parse save');
-    const saveData = tldParser.parse(buf);
+    const saveData = tldParser.parse(unit8Array);
     console.timeEnd('parse save');
     saveData?.m_Dict?.global?.fatigue?.m_CurrentFatigueProxy;
     this.currentSave = {
